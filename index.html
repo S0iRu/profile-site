@@ -1,509 +1,159 @@
 <!DOCTYPE html>
 <html lang="ja">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QCPHCCP92N"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'G-QCPHCCP92N');
-    </script>
-    <title>S0iRu_VR - Profile</title>
-    <!-- Google Fonts: 日本語フォントと英字フォント -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Orbitron:wght@500;700&display=swap"
-        rel="stylesheet">
-    <!-- Font Awesome: アイコン用 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" href="favicon.png" type="image/png">
-
-    <style>
-        /* --- CSS 変数定義 --- */
-        :root {
-            /* ダークモードベースの色 */
-            --bg-color: #0d1117;
-            /* 背景色: GitHub Darkのような深い紺色 */
-            --card-bg: rgba(22, 27, 34, 0.7);
-            /* カード背景: 半透明 */
-            --card-border: rgba(255, 255, 255, 0.1);
-
-            /* アクセントカラー */
-            --accent-primary: #58a6ff;
-            /* 青 */
-            --accent-secondary: #bc8cff;
-            /* 紫 */
-            --text-main: #c9d1d9;
-            /* メインテキスト */
-            --text-heading: #ffffff;
-            /* 見出し */
-
-            /* グラデーション装飾用 */
-            --orb-color-1: #7928ca;
-            --orb-color-2: #ff0080;
-        }
-
-        /* --- リセット & 基本設定 --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Noto Sans JP', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-            /* 横スクロール防止 */
-            position: relative;
-            padding: 1rem 0;
-            /* 余白を縮小 */
-        }
-
-        /* --- 背景のアニメーション装飾 (オーブ) --- */
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.4;
-            animation: float 10s infinite ease-in-out;
-            pointer-events: none;
-            /* クリックを邪魔しない */
-        }
-
-        .orb-1 {
-            width: 300px;
-            height: 300px;
-            background: var(--orb-color-1);
-            top: -50px;
-            left: -50px;
-        }
-
-        .orb-2 {
-            width: 400px;
-            height: 400px;
-            background: var(--orb-color-2);
-            bottom: -100px;
-            right: -100px;
-            animation-delay: -5s;
-            /* タイミングをずらす */
-        }
-
-        @keyframes float {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            50% {
-                transform: translate(30px, 50px) scale(1.1);
-            }
-
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-        }
-
-        /* --- メインカード --- */
-        .profile-card {
-            background: var(--card-bg);
-            /* ガラスモーフィズム効果（すりガラス） */
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 2rem 2rem;
-            /* パディングを少し縮小 */
-            width: 90%;
-            max-width: 480px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-
-            /* アニメーション (フェードインのみ、移動はJSのスケールと競合しないよう削除または調整) */
-            opacity: 0;
-            /* transform: translateYの方を削除し、JSのscale制御に任せる */
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* --- アイコン画像エリア --- */
-        .avatar-container {
-            position: relative;
-            width: 120px;
-            /* アイコンサイズを少し縮小 */
-            height: 120px;
-            margin: 0 auto 1rem;
-        }
-
-        .avatar-placeholder {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 3px solid var(--text-heading);
-            background: linear-gradient(135deg, #1f2937, #111827);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(88, 166, 255, 0.3);
-        }
-
-        /* 画像がある場合はimgタグを表示、ない場合はiタグを表示するスタイル */
-        .avatar-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
-            /* 画像URLが設定されたら block にする */
-        }
-
-        /* デフォルトのアイコン（画像がない時用） */
-        .avatar-icon {
-            font-size: 3.5rem;
-            color: var(--text-main);
-        }
-
-        .status-badge {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            width: 24px;
-            height: 24px;
-            background-color: #238636;
-            /* Online Green */
-            border: 4px solid #161b22;
-            /* カード背景に近い色で縁取り */
-            border-radius: 50%;
-            box-shadow: 0 0 10px #238636;
-        }
-
-        /* --- テキストエリア --- */
-        .name {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            color: var(--text-heading);
-            margin-bottom: 0.25rem;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-
-        .tagline {
-            color: var(--accent-primary);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-            letter-spacing: 1px;
-            opacity: 0.9;
-        }
-
-        .bio {
-            font-size: 0.95rem;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-            /* Bioの下マージン縮小 */
-            color: #8b949e;
-            padding: 0 1rem;
-        }
-
-        /* --- リンクボタン群 --- */
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            /* リンク間の隙間を縮小 */
-        }
-
-        .link-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* 中央揃え */
-            padding: 12px;
-            /* ボタンの高さを少し縮小 */
-            border-radius: 12px;
-            text-decoration: none;
-            color: var(--text-heading);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--card-border);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 600;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* ホバー時の光るエフェクト */
-        .link-btn:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: 0.5s;
-        }
-
-        .link-btn:hover:before {
-            left: 100%;
-        }
-
-        .link-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .link-btn i {
-            position: absolute;
-            left: 20px;
-            font-size: 1.3rem;
-        }
-
-        /* 各SNSブランドカラー（ホバー時） */
-        .btn-twitter:hover {
-            border-color: #1DA1F2;
-            color: #1DA1F2;
-            box-shadow: 0 0 15px rgba(29, 161, 242, 0.3);
-        }
-
-        .btn-discord:hover {
-            border-color: #5865F2;
-            color: #5865F2;
-            box-shadow: 0 0 15px rgba(88, 101, 242, 0.3);
-        }
-
-        .btn-youtube:hover {
-            border-color: #FF0000;
-            color: #FF0000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
-        }
-
-        .btn-steam:hover {
-            border-color: #00adee;
-            color: #00adee;
-            box-shadow: 0 0 15px rgba(0, 173, 238, 0.3);
-        }
-
-        .btn-note:hover {
-            border-color: #41C9B4;
-            color: #41C9B4;
-            box-shadow: 0 0 15px rgba(65, 201, 180, 0.3);
-        }
-
-        .btn-vrchat:hover {
-            border-color: #16c6d0;
-            color: #16c6d0;
-            box-shadow: 0 0 15px rgba(22, 198, 208, 0.3);
-        }
-
-        .btn-mail:hover {
-            border-color: #ffffff;
-            color: #ffffff;
-        }
-
-        footer {
-            margin-top: 2.5rem;
-            font-size: 0.75rem;
-            color: #484f58;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 1px;
-        }
-
-        /* スマホ向けの微調整 (ベースのレイアウトを少し小さくしてスケーリング時の余白を確保) */
-        @media (max-width: 480px) {
-            .profile-card {
-                padding: 1.5rem 1rem;
-                /* パディングをさらに縮小 */
-                width: 90%;
-                /* 幅を少し狭める */
-                border-radius: 20px;
-            }
-
-            .name {
-                font-size: 1.5rem;
-                /* 文字サイズ調整 */
-            }
-
-            .bio {
-                font-size: 0.85rem;
-                line-height: 1.6;
-                margin-bottom: 1.2rem;
-            }
-
-            .avatar-container {
-                width: 100px;
-                height: 100px;
-            }
-
-            .link-btn {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-
-            .link-btn i {
-                left: 15px;
-                font-size: 1.1rem;
-            }
-        }
-
-        /* --- マウスストーカー (定常光るエフェクト) --- */
-        .cursor-glow {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 50px;
-            /* 少し大きく */
-            height: 50px;
-            border-radius: 50%;
-            /* background is handled by JS for dynamic color cycling */
-            margin-top: -25px;
-            /* width/2 */
-            margin-left: -25px;
-            /* height/2 */
-
-            pointer-events: none;
-            z-index: 9998;
-            mix-blend-mode: screen;
-            filter: blur(5px);
-            transition: opacity 0.3s, transform 0.1s linear;
-            /* transformはJS制御だがscale等のためにあると良い */
-            will-change: transform;
-            /* パフォーマンス最適化 */
-        }
-
-        /* --- パーティクル --- */
-        .particle {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0;
-            animation: particle-fly 1s ease-out forwards;
-            /* box-shadowはJSで動的に色をつけるため削除、あるいはデフォルトを指定 */
-        }
-
-        @keyframes particle-fly {
-            0% {
-                transform: translate(0, 0) scale(1);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translate(var(--tx), var(--ty)) scale(0);
-                /* 消えるときに小さく */
-                opacity: 0;
-            }
-        }
-
-        /* 画面外に出たときは隠すなどの処理も可能だが、今回はシンプルに */
-    </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+    href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Courgette&family=Great+Vibes&family=Pinyon+Script&family=Yuji+Syuku&family=Kaisei+Tokumin:wght@400;500;700&family=Dancing+Script:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Orbitron:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+<link rel="icon" href="icon.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
-
-    <!-- 背景の装飾オーブ -->
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
-
-    <div class="profile-card">
-        <div class="avatar-container">
-            <!-- 
-               アイコン画像の設定方法:
-               1. 自分の画像がある場合: 下の <img ...> の src を変更し、style="display: block;" にする
-               2. 画像がない場合: 下の <i ...> が表示されます
-            -->
-            <div class="avatar-placeholder">
-                <!-- ここに自分のアイコン画像のURLを入れてください。例: src="my-icon.png" -->
-                <img src="icon.png" alt="Icon" class="avatar-img" style="display: block;">
-                <!-- テスト用にblockにしています -->
-
-                <!-- 画像がない時のフォールバック用アイコン -->
-                <!-- <i class="fa-solid fa-user-astronaut avatar-icon"></i> -->
-            </div>
-
-            <!-- オンラインステータスランプ -->
-            <div class="status-badge" title="Online in VRChat"></div>
-        </div>
-
-        <h1 class="name">S0iRu</h1>
-        <p class="tagline">CITIZEN OF VIRTUAL REALITY</p>
-
-        <div class="bio">
-            <p>
-                そいそいだよぉ～っ！🐾
-            </p>
-        </div>
-
-        <div class="links">
-            <!-- X (Twitter) -->
-            <a href="https://x.com/S0iRu_VR" target="_blank" class="link-btn btn-twitter">
-                <i class="fa-brands fa-x-twitter"></i>
-                <span>X / Twitter</span>
-            </a>
-
-            <!-- VRChat -->
-            <a href="https://vrchat.com/home/user/usr_8983d927-d3b6-4094-a0c7-7782a94e75e3" target="_blank"
-                class="link-btn btn-vrchat">
-                <i class="fa-solid fa-vr-cardboard"></i>
-                <span>VRChat</span>
-            </a>
-
-            <!-- Discord -->
-            <a href="https://discord.com/users/539065727617859594" target="_blank" class="link-btn btn-discord">
-                <i class="fa-brands fa-discord"></i>
-                <span>Discord</span>
-            </a>
-
-            <!-- Note -->
-            <a href="https://note.com/s0iru" target="_blank" class="link-btn btn-note">
-                <i class="fa-solid fa-note-sticky"></i>
-                <span>Note</span>
-            </a>
-
-            <!-- YouTube -->
-            <a href="https://www.youtube.com/@s0iru143" target="_blank" class="link-btn btn-youtube">
-                <i class="fa-brands fa-youtube"></i>
-                <span>YouTube</span>
-            </a>
-
-            <!-- Steam -->
-            <a href="https://steamcommunity.com/profiles/76561198312938836" target="_blank" class="link-btn btn-steam">
-                <i class="fa-brands fa-steam"></i>
-                <span>Steam</span>
-            </a>
-
-        </div>
-
-        <footer>
-            &copy; 2025 S0iRu. All Rights Reserved.
-        </footer>
+    <div class="background-glow">
+        <canvas id="bg-particles"></canvas>
     </div>
 
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">S0iRu<span>Profile</span></a>
+            <ul class="nav-links">
+                <li><a href="#home">HOME</a></li>
+                <li><a href="#about">ABOUT ME</a></li>
+                <li><a href="#gallery">GALLERY</a></li>
+                <li><a href="#worlds">FAVORITE WORLDS</a></li>
+                <li><a href="#contact">CONNECT</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
 
+    <header id="home" class="hero">
+        <div class="container hero-content">
+            <div class="hero-text scroll-reveal">
+                <h1><span class="highlight">S0iRu</span></h1>
+                <!-- <p class="subtitle">CITIZEN OF VIRTUAL REALITY</p>
+                <div class="hero-buttons">
+                    <a href="#gallery" class="btn btn-primary">GALLERY</a>
+                    <a href="https://vrchat.com/home/user/usr_8983d927-d3b6-4094-a0c7-7782a94e75e3" target="_blank"
+                        class="btn btn-secondary">FRIEND</a>
+                </div> -->
+            </div>
+            <div class="hero-image scroll-reveal">
+                <img src="icon.png" alt="Avatar" class="avatar-img">
+            </div>
+        </div>
+    </header>
 
+    <section id="about" class="section about">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">About Me</h2>
+            <div class="about-content glass-card scroll-reveal">
+                <!-- <p>Inhabitant of the Virtual Realm.<br>
+                    仮想の世界で、呼吸する。<br>
+                    Exploring the boundaries of reality.</p> -->
+                <p>そいそいだよぉ～っ！🐾</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="section gallery">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Gallery</h2>
+            <div class="gallery-grid scroll-reveal">
+                <div class="gallery-item">
+                    <img src="images/g1.jpg" alt="Gallery Image 1" class="gallery-img">
+                </div>
+                <div class="gallery-item">
+                    <img src="images/g2.png" alt="Gallery Image 2" class="gallery-img">
+                </div>
+                <div class="gallery-item">
+                    <img src="images/g3.png" alt="Gallery Image 3" class="gallery-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="worlds" class="section worlds">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Favorite Worlds</h2>
+            <div class="worlds-grid">
+                <a href="https://vrchat.com/home/world/wrld_2fc4b16f-a2d3-45b6-a919-a36f257eb021" target="_blank"
+                    class="world-card glass-card scroll-reveal">
+                    <img src="images/world1.png" alt="大樹のそよ風（夜）" class="world-img">
+                    <h3>大樹のそよ風（夜）</h3>
+                    <p>チル / 夜 / 睡眠</p>
+                </a>
+                <a href="https://vrchat.com/home/world/wrld_26fe8b7e-0a3c-4126-a027-b763fd56c404" target="_blank"
+                    class="world-card glass-card scroll-reveal">
+                    <img src="images/world2.png" alt="Kotatsmuri-こたつむり-" class="world-img">
+                    <h3>Kotatsmuri-こたつむり-</h3>
+                    <p>チル / こたつ / 睡眠</p>
+                </a>
+                <a href="https://vrchat.com/home/world/wrld_269fa2ee-33e6-4505-b44f-fd1b3e4b6262" target="_blank"
+                    class="world-card glass-card scroll-reveal">
+                    <img src="images/world3.png" alt="小雨のあの日-A drizzly day" class="world-img">
+                    <h3>小雨のあの日-A drizzly day</h3>
+                    <p>雨 / 街 / 景色</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section contact">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Connect</h2>
+            <div class="social-links-grid scroll-reveal">
+
+                <!-- X (Twitter) -->
+                <a href="https://x.com/S0iRu_VR" target="_blank" class="link-btn" aria-label="X / Twitter">
+                    <i class="fa-brands fa-x-twitter"></i> <span>X / Twitter</span>
+                </a>
+
+                <!-- VRChat -->
+                <a href="https://vrchat.com/home/user/usr_8983d927-d3b6-4094-a0c7-7782a94e75e3" target="_blank"
+                    class="link-btn" aria-label="VRChat">
+                    <i class="fa-solid fa-vr-cardboard"></i> <span>VRChat</span>
+                </a>
+
+                <!-- Discord -->
+                <a href="https://discord.com/users/539065727617859594" target="_blank" class="link-btn"
+                    aria-label="Discord">
+                    <i class="fa-brands fa-discord"></i> <span>Discord</span>
+                </a>
+
+                <!-- Note -->
+                <a href="https://note.com/s0iru" target="_blank" class="link-btn" aria-label="Note">
+                    <i class="fa-solid fa-note-sticky"></i> <span>Note</span>
+                </a>
+
+                <!-- YouTube -->
+                <a href="https://www.youtube.com/@s0iru143" target="_blank" class="link-btn" aria-label="YouTube">
+                    <i class="fa-brands fa-youtube"></i> <span>YouTube</span>
+                </a>
+
+                <!-- Steam -->
+                <a href="https://steamcommunity.com/profiles/76561198312938836" target="_blank" class="link-btn"
+                    aria-label="Steam">
+                    <i class="fa-brands fa-steam"></i> <span>Steam</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 S0iRu. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div class="cursor-glow"></div>
     <script src="script.js"></script>
 </body>
 
