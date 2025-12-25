@@ -18,12 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!card) return;
 
         // Reset scale to measure natural size
-        card.style.transform = 'none';
+        card.style.zoom = '1';
 
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
-        const cardWidth = card.scrollWidth;
-        const cardHeight = card.scrollHeight;
+
+        // Measure card dimensions *without* scaling
+        // (zoom affects offsetWidth/Height, but scrollWidth might differ)
+        // Best to use offsetWidth here now that transform is gone
+        const cardWidth = card.offsetWidth;
+        const cardHeight = card.offsetHeight;
 
         // Calculate scale factor to fit
         const scaleX = (windowWidth * 0.9) / cardWidth; // 90% scaling
@@ -35,11 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Limit maximum scale (optional, prevent getting HUGE)
         if (scale > 1.2) scale = 1.2;
 
-        // Apply scale
-        // We use a separate transform for scaling to avoid conflict with fade-in animation if possible
-        // But since fade-in is one-time CSS animation, setting style directly overrides it.
-        // To mix with translate(0,0) from CSS animation completion:
-        card.style.transform = `scale(${scale})`;
+        // Apply scale using ZOOM for crisp text
+        card.style.zoom = scale;
     }
 
     // Initial scale on load
