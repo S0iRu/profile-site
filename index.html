@@ -56,6 +56,8 @@
             overflow-x: hidden;
             /* 横スクロール防止 */
             position: relative;
+            padding: 1rem 0;
+            /* 余白を縮小 */
         }
 
         /* --- 背景のアニメーション装飾 (オーブ) --- */
@@ -111,31 +113,40 @@
 
             border: 1px solid var(--card-border);
             border-radius: 24px;
-            padding: 3.5rem 2rem;
+            padding: 2rem 2rem;
+            /* パディングを少し縮小 */
             width: 90%;
             max-width: 480px;
             text-align: center;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 
-            /* アニメーション */
+            /* アニメーション (フェードインのみ、移動はJSのスケールと競合しないよう削除または調整) */
             opacity: 0;
-            transform: translateY(20px);
+            /* transform: translateYの方を削除し、JSのscale制御に任せる */
             animation: fadeIn 0.8s ease-out forwards;
+
+            /* スケーリングの基準点 */
+            transform-origin: center center;
+            will-change: transform;
         }
 
         @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
             to {
                 opacity: 1;
-                transform: translateY(0);
             }
         }
 
         /* --- アイコン画像エリア --- */
         .avatar-container {
             position: relative;
-            width: 130px;
-            height: 130px;
-            margin: 0 auto 1.5rem;
+            width: 120px;
+            /* アイコンサイズを少し縮小 */
+            height: 120px;
+            margin: 0 auto 1rem;
         }
 
         .avatar-placeholder {
@@ -202,7 +213,8 @@
         .bio {
             font-size: 0.95rem;
             line-height: 1.8;
-            margin-bottom: 2.0rem;
+            margin-bottom: 1.5rem;
+            /* Bioの下マージン縮小 */
             color: #8b949e;
             padding: 0 1rem;
         }
@@ -211,7 +223,8 @@
         .links {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.8rem;
+            /* リンク間の隙間を縮小 */
         }
 
         .link-btn {
@@ -219,7 +232,8 @@
             align-items: center;
             justify-content: center;
             /* 中央揃え */
-            padding: 14px;
+            padding: 12px;
+            /* ボタンの高さを少し縮小 */
             border-radius: 12px;
             text-decoration: none;
             color: var(--text-heading);
@@ -284,6 +298,12 @@
             box-shadow: 0 0 15px rgba(0, 173, 238, 0.3);
         }
 
+        .btn-note:hover {
+            border-color: #41C9B4;
+            color: #41C9B4;
+            box-shadow: 0 0 15px rgba(65, 201, 180, 0.3);
+        }
+
         .btn-vrchat:hover {
             border-color: #16c6d0;
             color: #16c6d0;
@@ -303,17 +323,93 @@
             letter-spacing: 1px;
         }
 
-        /* スマホ向けの微調整 */
+        /* スマホ向けの微調整 (ベースのレイアウトを少し小さくしてスケーリング時の余白を確保) */
         @media (max-width: 480px) {
             .profile-card {
-                padding: 2.5rem 1.5rem;
-                width: 95%;
+                padding: 1.5rem 1rem;
+                /* パディングをさらに縮小 */
+                width: 90%;
+                /* 幅を少し狭める */
+                border-radius: 20px;
             }
 
             .name {
-                font-size: 1.6rem;
+                font-size: 1.5rem;
+                /* 文字サイズ調整 */
+            }
+
+            .bio {
+                font-size: 0.85rem;
+                line-height: 1.6;
+                margin-bottom: 1.2rem;
+            }
+
+            .avatar-container {
+                width: 100px;
+                height: 100px;
+            }
+
+            .link-btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .link-btn i {
+                left: 15px;
+                font-size: 1.1rem;
             }
         }
+
+        /* --- マウスストーカー (定常光るエフェクト) --- */
+        .cursor-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 50px;
+            /* 少し大きく */
+            height: 50px;
+            border-radius: 50%;
+            /* background is handled by JS for dynamic color cycling */
+            margin-top: -25px;
+            /* width/2 */
+            margin-left: -25px;
+            /* height/2 */
+
+            pointer-events: none;
+            z-index: 9998;
+            mix-blend-mode: screen;
+            filter: blur(5px);
+            transition: opacity 0.3s, transform 0.1s linear;
+            /* transformはJS制御だがscale等のためにあると良い */
+            will-change: transform;
+            /* パフォーマンス最適化 */
+        }
+
+        /* --- パーティクル --- */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            animation: particle-fly 1s ease-out forwards;
+            /* box-shadowはJSで動的に色をつけるため削除、あるいはデフォルトを指定 */
+        }
+
+        @keyframes particle-fly {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                /* 消えるときに小さく */
+                opacity: 0;
+            }
+        }
+
+        /* 画面外に出たときは隠すなどの処理も可能だが、今回はシンプルに */
     </style>
 </head>
 
@@ -375,6 +471,12 @@
                 <span>Discord</span>
             </a>
 
+            <!-- Note -->
+            <a href="https://note.com/s0iru" target="_blank" class="link-btn btn-note">
+                <i class="fa-solid fa-note-sticky"></i>
+                <span>Note</span>
+            </a>
+
             <!-- YouTube -->
             <a href="https://www.youtube.com/@s0iru143" target="_blank" class="link-btn btn-youtube">
                 <i class="fa-brands fa-youtube"></i>
@@ -386,6 +488,7 @@
                 <i class="fa-brands fa-steam"></i>
                 <span>Steam</span>
             </a>
+
         </div>
 
         <footer>
@@ -393,6 +496,9 @@
         </footer>
     </div>
 
+
+
+    <script src="script.js"></script>
 </body>
 
 </html>
