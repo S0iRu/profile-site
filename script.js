@@ -242,3 +242,36 @@ interactables.forEach(el => {
         cursorGlow.classList.remove('active');
     });
 });
+
+// --- Lightbox Functionality ---
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const closeBtn = document.querySelector('.lightbox-close');
+
+// Open Lightbox
+document.querySelectorAll('.gallery-img').forEach(img => {
+    img.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent bubbling issues
+        lightbox.style.display = 'flex';
+        lightboxImg.src = img.src;
+        document.body.style.overflow = 'hidden'; // Disable background scroll
+    });
+});
+
+// Close Lightbox (Button)
+if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+        lightbox.style.display = 'none';
+        document.body.style.overflow = '';
+    });
+}
+
+// Close Lightbox (Background Click)
+if (lightbox) {
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    });
+}
