@@ -3,6 +3,8 @@
 
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QCPHCCP92N"></script>
     <script>
@@ -24,6 +26,12 @@
     <link rel="stylesheet" href="style.css">
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Security: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self'; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com;">
+    <!-- Security: Referrer Policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 </head>
 
 <body>
@@ -89,19 +97,19 @@
             <h2 class="section-title scroll-reveal">Favorite Worlds</h2>
             <div class="worlds-grid">
                 <a href="https://vrchat.com/home/world/wrld_2fc4b16f-a2d3-45b6-a919-a36f257eb021" target="_blank"
-                    class="world-card glass-card scroll-reveal">
+                    rel="noopener noreferrer" class="world-card glass-card scroll-reveal">
                     <img src="images/world1.png" alt="大樹のそよ風（夜）" class="world-img">
                     <h3>大樹のそよ風（夜）</h3>
                     <p>チル / 夜 / 睡眠</p>
                 </a>
                 <a href="https://vrchat.com/home/world/wrld_26fe8b7e-0a3c-4126-a027-b763fd56c404" target="_blank"
-                    class="world-card glass-card scroll-reveal">
+                    rel="noopener noreferrer" class="world-card glass-card scroll-reveal">
                     <img src="images/world2.png" alt="Kotatsmuri-こたつむり-" class="world-img">
                     <h3>Kotatsmuri-こたつむり-</h3>
                     <p>チル / こたつ / 睡眠</p>
                 </a>
                 <a href="https://vrchat.com/home/world/wrld_269fa2ee-33e6-4505-b44f-fd1b3e4b6262" target="_blank"
-                    class="world-card glass-card scroll-reveal">
+                    rel="noopener noreferrer" class="world-card glass-card scroll-reveal">
                     <img src="images/world3.png" alt="小雨のあの日-A drizzly day" class="world-img">
                     <h3>小雨のあの日-A drizzly day</h3>
                     <p>雨 / 街 / 景色</p>
@@ -116,35 +124,38 @@
             <div class="social-links-grid scroll-reveal">
 
                 <!-- X (Twitter) -->
-                <a href="https://x.com/S0iRu_VR" target="_blank" class="link-btn" aria-label="X / Twitter">
+                <a href="https://x.com/S0iRu_VR" target="_blank" rel="noopener noreferrer" class="link-btn"
+                    aria-label="X / Twitter">
                     <i class="fa-brands fa-x-twitter"></i> <span>X / Twitter</span>
                 </a>
 
                 <!-- VRChat -->
                 <a href="https://vrchat.com/home/user/usr_8983d927-d3b6-4094-a0c7-7782a94e75e3" target="_blank"
-                    class="link-btn" aria-label="VRChat">
+                    rel="noopener noreferrer" class="link-btn" aria-label="VRChat">
                     <i class="fa-solid fa-vr-cardboard"></i> <span>VRChat</span>
                 </a>
 
                 <!-- Discord -->
-                <a href="https://discord.com/users/539065727617859594" target="_blank" class="link-btn"
-                    aria-label="Discord">
+                <a href="https://discord.com/users/539065727617859594" target="_blank" rel="noopener noreferrer"
+                    class="link-btn" aria-label="Discord">
                     <i class="fa-brands fa-discord"></i> <span>Discord</span>
                 </a>
 
                 <!-- Note -->
-                <a href="https://note.com/s0iru" target="_blank" class="link-btn" aria-label="Note">
+                <a href="https://note.com/s0iru" target="_blank" rel="noopener noreferrer" class="link-btn"
+                    aria-label="Note">
                     <i class="fa-solid fa-note-sticky"></i> <span>Note</span>
                 </a>
 
                 <!-- YouTube -->
-                <a href="https://www.youtube.com/@s0iru143" target="_blank" class="link-btn" aria-label="YouTube">
+                <a href="https://www.youtube.com/@s0iru143" target="_blank" rel="noopener noreferrer" class="link-btn"
+                    aria-label="YouTube">
                     <i class="fa-brands fa-youtube"></i> <span>YouTube</span>
                 </a>
 
                 <!-- Steam -->
-                <a href="https://steamcommunity.com/profiles/76561198312938836" target="_blank" class="link-btn"
-                    aria-label="Steam">
+                <a href="https://steamcommunity.com/profiles/76561198312938836" target="_blank"
+                    rel="noopener noreferrer" class="link-btn" aria-label="Steam">
                     <i class="fa-brands fa-steam"></i> <span>Steam</span>
                 </a>
             </div>
