@@ -1084,25 +1084,22 @@ footer {
     }
 
     /* Secret Message Mobile Styles */
+    /* Secret Message Mobile Styles */
     .secret-message {
-        writing-mode: vertical-rl;
-        /* Vertical writing mode */
-        text-orientation: upright;
-        /* Upright characters */
-        width: auto;
+        writing-mode: horizontal-tb;
+        width: max-content;
+        /* Force width to match text length (ignore parent width) */
+        max-width: 95vw;
+        /* Cap at screen width */
         height: auto;
-        min-height: 300px;
-        /* Make it look like a long strip */
-        max-height: 80vh;
-        /* Allow it to go very high */
-        max-width: 90vw;
+        min-height: auto;
+        max-height: none;
         white-space: normal;
-        padding: 1.2rem 1rem;
-        bottom: 105%;
-        /* Start closer to avatar so it has room to grow up */
+        /* Allow wrap ONLY when hitting max-width */
+        padding: 1rem 1.4rem;
+        bottom: 120%;
         text-align: center;
-        /* In vertical, aligns text lines? */
-        /* Flex default is row, which follows writing mode (top-to-bottom). */
+        justify-content: center;
         gap: 0.5rem;
     }
 
