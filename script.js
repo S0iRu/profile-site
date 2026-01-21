@@ -247,8 +247,11 @@ interactables.forEach(el => {
 const avatarImg = document.querySelector('.avatar-img');
 let avatarClickCount = 0;
 let clickTimer = null;
+let isEasterEggActive = false;
 
 avatarImg.addEventListener('click', (e) => {
+    if (isEasterEggActive) return;
+
     avatarClickCount++;
 
     // Reset after 2 seconds of no clicks
@@ -270,6 +273,8 @@ avatarImg.addEventListener('click', (e) => {
 });
 
 function triggerEasterEgg() {
+    isEasterEggActive = true;
+
     // Create massive sakura burst
     for (let i = 0; i < 100; i++) {
         setTimeout(() => {
@@ -282,6 +287,12 @@ function triggerEasterEgg() {
 
     // Make avatar spin
     avatarImg.style.animation = 'avatarSpin 1s ease-in-out';
+
+    // Reset active state after animation
+    setTimeout(() => {
+        isEasterEggActive = false;
+        avatarImg.style.animation = 'none'; // Cleanup
+    }, 1000);
 }
 
 function createSakuraPetal() {
