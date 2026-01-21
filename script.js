@@ -248,6 +248,7 @@ const avatarImg = document.querySelector('.avatar-img');
 let avatarClickCount = 0;
 let clickTimer = null;
 let isEasterEggActive = false;
+let totalEasterEggCount = 0;
 
 avatarImg.addEventListener('click', (e) => {
     if (isEasterEggActive) return;
@@ -274,21 +275,25 @@ avatarImg.addEventListener('click', (e) => {
 
 function triggerEasterEgg() {
     isEasterEggActive = true;
+    totalEasterEggCount++;
+
+    // Determine rarity ONCE for this trigger (20% chance after 5th trigger)
+    const isRare = totalEasterEggCount >= 5 && Math.random() < 0.2;
 
     // Get avatar center position
     const rect = avatarImg.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
-    // Create massive sakura burst
+    // Create massive burst
     for (let i = 0; i < 100; i++) {
         setTimeout(() => {
-            createSakuraPetal(centerX, centerY);
+            createSakuraPetal(centerX, centerY, isRare); // Pass isRare
         }, i * 10); // Faster burst
     }
 
     // Show secret message
-    showSecretMessage();
+    showSecretMessage(isRare); // Pass isRare
 
     // Make avatar spin
     avatarImg.style.animation = 'avatarSpin 1s ease-in-out';
@@ -300,12 +305,23 @@ function triggerEasterEgg() {
     }, 1000);
 }
 
-function createSakuraPetal(startX, startY) {
+function createSakuraPetal(startX, startY, isHeart) {
     const petal = document.createElement('div');
-    petal.classList.add('easter-petal');
+
+    // Config based on type
+    if (isHeart) {
+        petal.classList.add('easter-heart');
+        petal.textContent = '❤';
+    } else {
+        petal.classList.add('easter-petal');
+    }
+
     document.body.appendChild(petal);
 
-    const size = Math.random() * 15 + 8;
+    // Make hearts slightly larger than petals
+    const size = isHeart
+        ? Math.random() * 20 + 15  // Hearts: 15px - 35px
+        : Math.random() * 15 + 8;  // Petals: 8px - 23px
 
     // Random direction and distance for burst
     const angle = Math.random() * Math.PI * 2;
@@ -318,12 +334,19 @@ function createSakuraPetal(startX, startY) {
     const colors = ['#ff91c2', '#ffb7d5', '#ffd1e1', '#fff0f5', '#ffcce6'];
     const color = colors[Math.floor(Math.random() * colors.length)];
 
+    // Apply styles
+    // Note: For hearts, 'background' should be transparent and 'color' set. 
+    // For petals, 'background' is set. 
+    // We use common logic but adjust via ternary or specific props.
+
     petal.style.cssText = `
         position: fixed;
-        width: ${size}px;
-        height: ${size}px;
-        background: ${color};
-        border-radius: 100% 0 100% 0;
+        width: ${isHeart ? 'auto' : size + 'px'};
+        height: ${isHeart ? 'auto' : size + 'px'};
+        font-size: ${size}px; /* Only affects hearts */
+        background: ${isHeart ? 'transparent' : color};
+        color: ${color}; /* Only affects hearts */
+        border-radius: ${isHeart ? '0' : '100% 0 100% 0'};
         left: ${startX}px;
         top: ${startY}px;
         pointer-events: none;
@@ -340,17 +363,26 @@ function createSakuraPetal(startX, startY) {
     }, duration * 1000);
 }
 
-function showSecretMessage() {
+function showSecretMessage(isRare) {
     // Remove existing message if any
     const existing = document.querySelector('.secret-message');
     if (existing) existing.remove();
 
     const message = document.createElement('div');
     message.classList.add('secret-message');
+
+    // Message selection was calculated in triggerEasterEgg and passed in
+    // const isRare = totalEasterEggCount >= 5 && Math.random() < 0.2; (Removed)
+    const text = isRare ? 'えへっ！そいそいのことそんなにすきなのぉ～？' : 'そいそいだよぉ～っ！';
+    const emoji = isRare ? '💖' : '🐾'; // Optional: change emoji too for variety
+
+    // Calculate font size adjustment if rare message (longer)
+    const extraClass = isRare ? ' rare-msg' : '';
+
     message.innerHTML = `
-        <span class="secret-emoji">🐾</span>
-        <span class="secret-text">そいそいだよぉ～っ！</span>
-        <span class="secret-emoji">🐾</span>
+        <span class="secret-emoji">${emoji}</span>
+        <span class="secret-text${extraClass}">${text}</span>
+        <span class="secret-emoji">${emoji}</span>
     `;
 
     const heroImage = document.querySelector('.hero-image');

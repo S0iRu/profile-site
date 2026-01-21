@@ -485,6 +485,16 @@ ul {
     box-shadow: 0 0 10px rgba(255, 145, 194, 0.5);
 }
 
+.easter-heart {
+    text-shadow: 0 0 10px rgba(255, 145, 194, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 100%;
+    /* Will be controlled by inline style */
+    line-height: 1;
+}
+
 .secret-message {
     position: absolute;
     bottom: 110%;
@@ -493,6 +503,7 @@ ul {
     transform: translateX(-50%);
     background: rgba(255, 255, 255, 0.95);
     white-space: nowrap;
+    /* Restored to fix vertical stacking issue */
     padding: 1.2rem 2rem;
     border-radius: 50px;
     z-index: 10001;
