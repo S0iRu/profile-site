@@ -275,11 +275,16 @@ avatarImg.addEventListener('click', (e) => {
 function triggerEasterEgg() {
     isEasterEggActive = true;
 
+    // Get avatar center position
+    const rect = avatarImg.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
     // Create massive sakura burst
     for (let i = 0; i < 100; i++) {
         setTimeout(() => {
-            createSakuraPetal();
-        }, i * 20);
+            createSakuraPetal(centerX, centerY);
+        }, i * 10); // Faster burst
     }
 
     // Show secret message
@@ -295,16 +300,20 @@ function triggerEasterEgg() {
     }, 1000);
 }
 
-function createSakuraPetal() {
+function createSakuraPetal(startX, startY) {
     const petal = document.createElement('div');
     petal.classList.add('easter-petal');
     document.body.appendChild(petal);
 
     const size = Math.random() * 15 + 8;
-    const startX = Math.random() * window.innerWidth;
-    const drift = (Math.random() - 0.5) * 200;
-    const duration = Math.random() * 3 + 3;
-    const delay = Math.random() * 0.5;
+
+    // Random direction and distance for burst
+    const angle = Math.random() * Math.PI * 2;
+    const velocity = Math.random() * 500 + 200; // Wider burst
+    const endX = Math.cos(angle) * velocity;
+    const endY = Math.sin(angle) * velocity + 100; // Add some gravity (downward bias)
+    const rotation = Math.random() * 720;
+    const duration = Math.random() * 1.5 + 1;
 
     const colors = ['#ff91c2', '#ffb7d5', '#ffd1e1', '#fff0f5', '#ffcce6'];
     const color = colors[Math.floor(Math.random() * colors.length)];
@@ -316,17 +325,19 @@ function createSakuraPetal() {
         background: ${color};
         border-radius: 100% 0 100% 0;
         left: ${startX}px;
-        top: -20px;
+        top: ${startY}px;
         pointer-events: none;
-        z-index: 10000;
-        opacity: 0.9;
-        animation: petalFall ${duration}s ease-in-out ${delay}s forwards;
-        --drift: ${drift}px;
+        z-index: 100; /* On top of avatar */
+        opacity: 0; /* Start invisible, fade in */
+        animation: petalBurst ${duration}s ease-out forwards;
+        --endX: ${endX}px;
+        --endY: ${endY}px;
+        --rot: ${rotation}deg;
     `;
 
     setTimeout(() => {
         petal.remove();
-    }, (duration + delay) * 1000 + 100);
+    }, duration * 1000);
 }
 
 function showSecretMessage() {
