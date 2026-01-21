@@ -278,6 +278,7 @@ function triggerEasterEgg() {
     totalEasterEggCount++;
 
     // Determine rarity ONCE for this trigger (20% chance after 5th trigger)
+    // Determine rarity ONCE for this trigger (20% chance after 5th trigger)
     const isRare = totalEasterEggCount >= 5 && Math.random() < 0.2;
 
     // Get avatar center position
@@ -296,13 +297,18 @@ function triggerEasterEgg() {
     showSecretMessage(isRare); // Pass isRare
 
     // Make avatar spin
-    avatarImg.style.animation = 'avatarSpin 1s ease-in-out';
+    if (isRare) {
+        avatarImg.style.animation = 'avatarSpinRare 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)'; // Dynamic "back" easing
+    } else {
+        avatarImg.style.animation = 'avatarSpin 1s ease-in-out';
+    }
 
     // Reset active state after animation
+    const animDuration = isRare ? 1500 : 1000;
     setTimeout(() => {
         isEasterEggActive = false;
         avatarImg.style.animation = 'none'; // Cleanup
-    }, 1000);
+    }, animDuration);
 }
 
 function createSakuraPetal(startX, startY, isHeart) {
