@@ -1082,6 +1082,45 @@ footer {
     .link-btn i {
         font-size: 1.2rem;
     }
+
+    /* Secret Message Mobile Styles */
+    .secret-message {
+        writing-mode: vertical-rl;
+        /* Vertical writing mode */
+        text-orientation: upright;
+        /* Upright characters */
+        width: auto;
+        height: auto;
+        min-height: 300px;
+        /* Make it look like a long strip */
+        max-height: 80vh;
+        /* Allow it to go very high */
+        max-width: 90vw;
+        white-space: normal;
+        padding: 1.2rem 1rem;
+        bottom: 105%;
+        /* Start closer to avatar so it has room to grow up */
+        text-align: center;
+        /* In vertical, aligns text lines? */
+        /* Flex default is row, which follows writing mode (top-to-bottom). */
+        gap: 0.5rem;
+    }
+
+    .secret-text {
+        font-size: 1rem;
+        /* Standard readable size */
+    }
+
+    .secret-text.rare-msg {
+        font-size: 0.95rem;
+        /* readable size */
+        line-height: 1.4;
+        /* breathing room */
+    }
+
+    .secret-emoji {
+        font-size: 1.1rem;
+    }
 }
 
 /* Fix for very small screens */
