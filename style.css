@@ -405,6 +405,8 @@ ul {
 .hero-image {
     display: flex;
     justify-content: center;
+    position: relative;
+    /* For speech bubble positioning */
 }
 
 .avatar-img {
@@ -421,6 +423,191 @@ ul {
     transform: scale(1.05);
     box-shadow: 0 0 70px rgba(255, 155, 240, 0.2);
     border-color: var(--accent-color);
+}
+
+/* Easter Egg Animations */
+@keyframes avatarBounce {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes avatarSpin {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(1.2) rotate(180deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(360deg);
+    }
+}
+
+@keyframes petalFall {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: translateY(calc(100vh + 50px)) translateX(var(--drift)) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.easter-petal {
+    box-shadow: 0 0 10px rgba(255, 145, 194, 0.5);
+}
+
+.secret-message {
+    position: absolute;
+    bottom: 110%;
+    /* Above the avatar */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    white-space: nowrap;
+    padding: 1.2rem 2rem;
+    border-radius: 50px;
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 3px solid var(--accent-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 20px var(--accent-glow);
+    animation: bubblePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+.secret-message::after {
+    content: '';
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 18px 15px 0;
+    border-style: solid;
+    border-color: var(--accent-color) transparent transparent transparent;
+}
+
+/* Inner triangle for border effect (optional, implies white body) 
+   Simpler approach: just use the white bg. To match border we need a pseudo hack or just use filter drop-shadow or SVG.
+   Let's stick to simple solid triangle for now matching border color. 
+   Actually, to look correct with a border, we usually need two triangles or clip-path. 
+   Let's keep it simple: The triangle will be the border color. 
+   Wait, if the triangle is solid border color, it looks like a solid arrow. 
+   Let's try to make it look seamless.
+*/
+.secret-message::before {
+    content: '';
+    position: absolute;
+    bottom: -13px;
+    /* Slightly less to overlap */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 15px 12px 0;
+    border-style: solid;
+    border-color: #fff transparent transparent transparent;
+    z-index: 1;
+}
+
+
+.secret-text {
+    font-family: var(--font-pop);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    /* Pink text */
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+.secret-emoji {
+    font-size: 1.5rem;
+    opacity: 0;
+    animation: emojiReveal 0.4s ease forwards;
+}
+
+.secret-emoji:first-child {
+    animation-delay: 0.3s;
+}
+
+.secret-emoji:last-child {
+    animation-delay: 0.5s;
+}
+
+@keyframes bubblePop {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) scale(0.5) translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1) translateY(0);
+    }
+}
+
+@keyframes emojiReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.secret-message.fade-out {
+    animation: messageFadeOut 0.5s ease-in forwards;
+}
+
+@keyframes messageFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) scale(0.8) translateY(-20px);
+    }
+}
+
+.floating-particle {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10002;
+}
+
+@keyframes particleFade {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--endX), var(--endY)) scale(0);
+        opacity: 0;
+    }
 }
 
 /* About Section */

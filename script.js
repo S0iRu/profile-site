@@ -243,6 +243,145 @@ interactables.forEach(el => {
     });
 });
 
+// --- Avatar Easter Egg ---
+const avatarImg = document.querySelector('.avatar-img');
+let avatarClickCount = 0;
+let clickTimer = null;
+
+avatarImg.addEventListener('click', (e) => {
+    avatarClickCount++;
+
+    // Reset after 2 seconds of no clicks
+    clearTimeout(clickTimer);
+    clickTimer = setTimeout(() => {
+        avatarClickCount = 0;
+    }, 2000);
+
+    // Small bounce animation on each click
+    avatarImg.style.animation = 'none';
+    avatarImg.offsetHeight; // Trigger reflow
+    avatarImg.style.animation = 'avatarBounce 0.3s ease';
+
+    // Easter egg triggers at 5 clicks
+    if (avatarClickCount >= 5) {
+        avatarClickCount = 0;
+        triggerEasterEgg();
+    }
+});
+
+function triggerEasterEgg() {
+    // Create massive sakura burst
+    for (let i = 0; i < 100; i++) {
+        setTimeout(() => {
+            createSakuraPetal();
+        }, i * 20);
+    }
+
+    // Show secret message
+    showSecretMessage();
+
+    // Make avatar spin
+    avatarImg.style.animation = 'avatarSpin 1s ease-in-out';
+}
+
+function createSakuraPetal() {
+    const petal = document.createElement('div');
+    petal.classList.add('easter-petal');
+    document.body.appendChild(petal);
+
+    const size = Math.random() * 15 + 8;
+    const startX = Math.random() * window.innerWidth;
+    const drift = (Math.random() - 0.5) * 200;
+    const duration = Math.random() * 3 + 3;
+    const delay = Math.random() * 0.5;
+
+    const colors = ['#ff91c2', '#ffb7d5', '#ffd1e1', '#fff0f5', '#ffcce6'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    petal.style.cssText = `
+        position: fixed;
+        width: ${size}px;
+        height: ${size}px;
+        background: ${color};
+        border-radius: 100% 0 100% 0;
+        left: ${startX}px;
+        top: -20px;
+        pointer-events: none;
+        z-index: 10000;
+        opacity: 0.9;
+        animation: petalFall ${duration}s ease-in-out ${delay}s forwards;
+        --drift: ${drift}px;
+    `;
+
+    setTimeout(() => {
+        petal.remove();
+    }, (duration + delay) * 1000 + 100);
+}
+
+function showSecretMessage() {
+    // Remove existing message if any
+    const existing = document.querySelector('.secret-message');
+    if (existing) existing.remove();
+
+    const message = document.createElement('div');
+    message.classList.add('secret-message');
+    message.innerHTML = `
+        <span class="secret-emoji">🐾</span>
+        <span class="secret-text">そいそいだよぉ～っ！</span>
+        <span class="secret-emoji">🐾</span>
+    `;
+
+    const heroImage = document.querySelector('.hero-image');
+    if (heroImage) {
+        heroImage.appendChild(message);
+    } else {
+        document.body.appendChild(message);
+    }
+
+    // Subtle particle burst
+    createParticleBurst();
+
+    setTimeout(() => {
+        message.classList.add('fade-out');
+        setTimeout(() => message.remove(), 600);
+    }, 3000);
+}
+
+function createParticleBurst() {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const colors = ['#ff91c2', '#ffb7d5', '#ffd1e1', '#ffffff'];
+
+    for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+            const particle = document.createElement('div');
+            particle.classList.add('floating-particle');
+
+            const angle = (Math.PI * 2 / 30) * i + Math.random() * 0.5;
+            const velocity = Math.random() * 80 + 40;
+            const endX = Math.cos(angle) * velocity;
+            const endY = Math.sin(angle) * velocity;
+            const size = Math.random() * 4 + 2;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            particle.style.cssText = `
+                left: ${centerX}px;
+                top: ${centerY}px;
+                width: ${size}px;
+                height: ${size}px;
+                background: ${color};
+                box-shadow: 0 0 ${size * 2}px ${color};
+                animation: particleFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+                --endX: ${endX}px;
+                --endY: ${endY}px;
+            `;
+
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 800);
+        }, i * 15);
+    }
+}
+
 // --- Lightbox Functionality ---
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
