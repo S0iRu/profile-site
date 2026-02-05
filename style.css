@@ -722,13 +722,21 @@ ul {
 
 /* Gallery Section */
 .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    display: flex;
     gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.gallery-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-width: 0; /* Flexbox overflow fix */
 }
 
 .gallery-item {
-    aspect-ratio: 9/16;
+    /* aspect-ratio removed for masonry */
     background: var(--glass-bg);
     border: var(--glass-border);
     border-radius: 20px;
@@ -736,6 +744,7 @@ ul {
     position: relative;
     cursor: pointer;
     z-index: 1;
+    width: 100%;
 }
 
 .gallery-item .placeholder-img {
@@ -752,13 +761,46 @@ ul {
 
 .gallery-img {
     width: 100%;
-    height: 100%;
+    height: auto;
+    display: block;
     object-fit: cover;
     transition: transform 0.5s ease;
 }
 
 .gallery-item:hover .gallery-img {
     transform: scale(1.05);
+}
+
+/* Loading State - Skeleton Animation */
+.gallery-item.loading {
+    min-height: 200px;
+    background: linear-gradient(
+        90deg,
+        var(--glass-bg) 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        var(--glass-bg) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.gallery-item.loading .gallery-img {
+    opacity: 0;
+}
+
+.gallery-item.loaded .gallery-img {
+    opacity: 1;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
 }
 
 .placeholder-img {
@@ -825,67 +867,135 @@ ul {
     backdrop-filter: blur(5px);
 }
 
-.social-links-grid {
-    display: flex;
-    justify-content: center;
+/* Contact Section Redesign */
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
-    flex-wrap: wrap;
-    margin-top: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
-.link-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.contact-card {
+    position: relative;
     background: var(--glass-bg);
     border: var(--glass-border);
-    backdrop-filter: var(--glass-blur);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
+    border-radius: 20px;
     overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-decoration: none;
+    backdrop-filter: var(--glass-blur);
 }
 
-.link-btn span {
-    display: none;
-}
-
-.link-btn i {
-    font-size: 1.5rem;
-    color: #e0e0e0;
-    /* Whiter than text-secondary but not pure white */
-    transition: all 0.3s ease;
-    z-index: 1;
-}
-
-.link-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at center, var(--accent-glow), transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.link-btn:hover {
-    transform: translateY(-5px) scale(1.1);
+.contact-card:hover {
+    transform: translateY(-5px) scale(1.02);
     border-color: var(--accent-color);
-    box-shadow: 0 0 20px var(--accent-glow);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 20px var(--accent-glow);
 }
 
-.link-btn:hover::before {
-    opacity: 1;
+/* Primary Cards (Twitter & VRChat) */
+.contact-card.primary {
+    grid-column: span 2;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
 }
 
-.link-btn:hover i {
+.contact-card.primary .card-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    z-index: 2;
+}
+
+.contact-card.primary i {
+    font-size: 3.5rem;
+    color: var(--text-primary);
+    transition: transform 0.3s ease;
+}
+
+.contact-card.primary:hover i {
+    transform: scale(1.1) rotate(-10deg);
     color: #fff;
-    transform: scale(1.1);
-    text-shadow: 0 0 10px var(--accent-color);
+}
+
+.contact-card .card-text h3 {
+    font-size: 1.4rem;
+    margin: 0;
+    color: #fff;
+    font-family: var(--font-heading);
+}
+
+.contact-card .card-text p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0;
+    font-family: var(--font-pop);
+}
+
+/* Secondary Cards (Discord, Note, etc) */
+.contact-card.secondary {
+    grid-column: span 1;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.contact-card.secondary i {
+    font-size: 2rem;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.contact-card.secondary span {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-family: var(--font-pop);
+    transition: color 0.3s ease;
+}
+
+.contact-card.secondary:hover i {
+    transform: translateY(-5px);
+    color: #fff;
+}
+
+.contact-card.secondary:hover span {
+    color: var(--accent-color);
+}
+
+/* Brand Colors on Hover */
+.contact-card.twitter:hover i { color: #1DA1F2; text-shadow: 0 0 15px rgba(29, 161, 242, 0.4); }
+.contact-card.vrchat:hover i { color: #17e0db; text-shadow: 0 0 15px rgba(23, 224, 219, 0.4); }
+.contact-card.discord:hover i { color: #5865F2; text-shadow: 0 0 15px rgba(88, 101, 242, 0.4); }
+.contact-card.note:hover i { color: #41C9B4; text-shadow: 0 0 15px rgba(65, 201, 180, 0.4); }
+.contact-card.youtube:hover i { color: #FF0000; text-shadow: 0 0 15px rgba(255, 0, 0, 0.4); }
+.contact-card.steam:hover i { color: #1b2838; text-shadow: 0 0 15px rgba(255, 255, 255, 0.2); } /* Steam is dark, maybe white glow */
+.contact-card.steam:hover i { color: #ffffff; }
+
+/* Responsive Contact Grid */
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr 1fr; /* 2 columns on mobile */
+    }
+
+    .contact-card.primary {
+        grid-column: span 2; /* Full width for primary */
+        height: 120px;
+        padding: 0 1.5rem;
+    }
+
+    .contact-card.primary i {
+        font-size: 2.5rem;
+    }
+
+    .contact-card.secondary {
+        height: 100px;
+    }
 }
 
 /* Footer */
@@ -1097,8 +1207,11 @@ footer {
     }
 
     .gallery-grid {
-        grid-template-columns: 1fr;
-        /* Single column on mobile */
+        flex-direction: column;
+        /* Single column on mobile by stacking columns? 
+           Ideally we want JS to handle 1 column, but as a fallback CSS stack is ok 
+           though order will be LeftCol then RightCol. 
+           We will implement JS resizing for proper ordering. */
         gap: 2rem;
     }
 

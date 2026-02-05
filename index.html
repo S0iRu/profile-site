@@ -29,7 +29,7 @@
 
     <!-- Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self'; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com;">
+        content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https://drive.google.com https://*.googleusercontent.com; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://www.googleapis.com;">
     <!-- Security: Referrer Policy -->
     <meta name="referrer" content="strict-origin-when-cross-origin">
 </head>
@@ -45,9 +45,9 @@
             <ul class="nav-links">
                 <li><a href="#home">HOME</a></li>
                 <li><a href="#about">ABOUT ME</a></li>
+                <li><a href="#contact">CONTACT</a></li>
                 <li><a href="#gallery">GALLERY</a></li>
                 <li><a href="#worlds">FAVORITE WORLDS</a></li>
-                <li><a href="#contact">CONTACT</a></li>
             </ul>
             <div class="hamburger">
                 <i class="fas fa-bars"></i>
@@ -75,18 +75,64 @@
         </div>
     </section>
 
+    <section id="contact" class="section contact">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Contact</h2>
+            
+            <div class="contact-grid scroll-reveal">
+                <!-- Primary Contacts (Big Cards) -->
+                <a href="https://x.com/S0iRu_VR" target="_blank" rel="noopener noreferrer" class="contact-card primary twitter">
+                    <div class="card-bg"></div>
+                    <div class="card-content">
+                        <i class="fa-brands fa-x-twitter"></i>
+                        <div class="card-text">
+                            <h3>X / Twitter</h3>
+                            <p>@S0iRu_VR</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="https://vrchat.com/home/user/usr_8983d927-d3b6-4094-a0c7-7782a94e75e3" target="_blank" rel="noopener noreferrer" class="contact-card primary vrchat">
+                    <div class="card-bg"></div>
+                    <div class="card-content">
+                        <i class="fa-solid fa-vr-cardboard"></i>
+                        <div class="card-text">
+                            <h3>VRChat</h3>
+                            <p>S0iRu</p>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Secondary Contacts (Compact Cards) -->
+                <a href="https://discord.com/users/539065727617859594" target="_blank" rel="noopener noreferrer" class="contact-card secondary discord">
+                    <i class="fa-brands fa-discord"></i>
+                    <span>Discord</span>
+                </a>
+
+                <a href="https://note.com/s0iru" target="_blank" rel="noopener noreferrer" class="contact-card secondary note">
+                    <i class="fa-solid fa-note-sticky"></i>
+                    <span>Note</span>
+                </a>
+
+                <a href="https://www.youtube.com/@s0iru143" target="_blank" rel="noopener noreferrer" class="contact-card secondary youtube">
+                    <i class="fa-brands fa-youtube"></i>
+                    <span>YouTube</span>
+                </a>
+
+                <a href="https://steamcommunity.com/profiles/76561198312938836" target="_blank" rel="noopener noreferrer" class="contact-card secondary steam">
+                    <i class="fa-brands fa-steam"></i>
+                    <span>Steam</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <section id="gallery" class="section gallery">
         <div class="container">
-            <h2 class="section-title scroll-reveal">Gallery</h2>
-            <div class="gallery-grid scroll-reveal">
-                <div class="gallery-item">
-                    <img src="images/g1.jpg" alt="Gallery Image 1" class="gallery-img">
-                </div>
-                <div class="gallery-item">
-                    <img src="images/g2.png" alt="Gallery Image 2" class="gallery-img">
-                </div>
-                <div class="gallery-item">
-                    <img src="images/g3.png" alt="Gallery Image 3" class="gallery-img">
+            <div class="gallery-wrapper scroll-reveal">
+                <h2 class="section-title">Gallery</h2>
+                <div class="gallery-grid" id="gallery-container">
+                    <!-- Gallery images will be loaded dynamically via script.js -->
                 </div>
             </div>
         </div>
@@ -113,50 +159,6 @@
                     <img src="images/world3.png" alt="小雨のあの日-A drizzly day" class="world-img">
                     <h3>小雨のあの日-A drizzly day</h3>
                     <p>雨 / 街 / 景色</p>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="section contact">
-        <div class="container">
-            <h2 class="section-title scroll-reveal">Contact</h2>
-            <div class="social-links-grid scroll-reveal">
-
-                <!-- X (Twitter) -->
-                <a href="https://x.com/S0iRu_VR" target="_blank" rel="noopener noreferrer" class="link-btn"
-                    aria-label="X / Twitter">
-                    <i class="fa-brands fa-x-twitter"></i> <span>X / Twitter</span>
-                </a>
-
-                <!-- VRChat -->
-                <a href="https://vrchat.com/home/user/usr_8983d927-d3b6-4094-a0c7-7782a94e75e3" target="_blank"
-                    rel="noopener noreferrer" class="link-btn" aria-label="VRChat">
-                    <i class="fa-solid fa-vr-cardboard"></i> <span>VRChat</span>
-                </a>
-
-                <!-- Discord -->
-                <a href="https://discord.com/users/539065727617859594" target="_blank" rel="noopener noreferrer"
-                    class="link-btn" aria-label="Discord">
-                    <i class="fa-brands fa-discord"></i> <span>Discord</span>
-                </a>
-
-                <!-- Note -->
-                <a href="https://note.com/s0iru" target="_blank" rel="noopener noreferrer" class="link-btn"
-                    aria-label="Note">
-                    <i class="fa-solid fa-note-sticky"></i> <span>Note</span>
-                </a>
-
-                <!-- YouTube -->
-                <a href="https://www.youtube.com/@s0iru143" target="_blank" rel="noopener noreferrer" class="link-btn"
-                    aria-label="YouTube">
-                    <i class="fa-brands fa-youtube"></i> <span>YouTube</span>
-                </a>
-
-                <!-- Steam -->
-                <a href="https://steamcommunity.com/profiles/76561198312938836" target="_blank"
-                    rel="noopener noreferrer" class="link-btn" aria-label="Steam">
-                    <i class="fa-brands fa-steam"></i> <span>Steam</span>
                 </a>
             </div>
         </div>

@@ -51,8 +51,8 @@ window.addEventListener('scroll', () => {
 // Scroll Reveal Animation
 const observerOptions = {
     root: null,
-    rootMargin: '0px',
-    threshold: 0.1
+    rootMargin: '100px 0px', // Trigger 100px before entering viewport
+    threshold: 0.01 // Trigger when just 1% is visible
 };
 
 const observer = new IntersectionObserver((entries, observer) => {
@@ -442,35 +442,248 @@ function createParticleBurst() {
     }
 }
 
-// --- Lightbox Functionality ---
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = document.getElementById('lightbox-img');
-const closeBtn = document.querySelector('.lightbox-close');
+// --- Gallery System & Lightbox ---
+const galleryConfig = {
+    apiKey: 'AIzaSyB1omQ9Bwj3sdgAFzVzmBRocNItRZDH1bU',
+    // Googleドライブの親フォルダID（中に「横」「縦」などのサブフォルダがある想定）
+    parentFolderId: '1foag51qpEAKVIxow4QzEzjrFIERPiylQ',
+    useDrive: true,
+    localImages: [
+        'images/g1.jpg',
+        'images/g2.png',
+        'images/g3.png'
+    ]
+};
 
-// Open Lightbox
-document.querySelectorAll('.gallery-img').forEach(img => {
-    img.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent bubbling issues
-        lightbox.style.display = 'flex';
-        lightboxImg.src = img.src;
-        document.body.style.overflow = 'hidden'; // Disable background scroll
-    });
-});
+// Fisher-Yates shuffle algorithm
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
 
-// Close Lightbox (Button)
-if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-        lightbox.style.display = 'none';
-        document.body.style.overflow = '';
+async function initGallery() {
+    const container = document.getElementById('gallery-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const isMobile = window.innerWidth <= 768;
+    const colCount = isMobile ? 1 : 2;
+    const columns = [];
+
+    // Create Columns
+    for (let i = 0; i < colCount; i++) {
+        const col = document.createElement('div');
+        col.className = 'gallery-col';
+        col.style.transitionDelay = `${i * 0.1}s`;
+        container.appendChild(col);
+        columns.push(col);
+    }
+
+    let images = [];
+
+    // Fetch from Drive if configured
+    if (galleryConfig.useDrive && galleryConfig.apiKey && galleryConfig.parentFolderId) {
+        try {
+            const driveImages = await fetchDriveImages();
+            images = driveImages.length > 0 ? driveImages : galleryConfig.localImages;
+        } catch (error) {
+            console.error('Failed to load Drive images:', error);
+            images = galleryConfig.localImages; // Fallback
+        }
+    } else {
+        images = galleryConfig.localImages;
+    }
+
+    // Shuffle images randomly
+    images = shuffleArray(images);
+
+    // Calculate column heights for true masonry
+    const colHeights = new Array(colCount).fill(0);
+
+    // Add Images to Columns
+    images.forEach((imgData) => {
+        const src = typeof imgData === 'string' ? imgData : imgData.src;
+        const fullSrc = typeof imgData === 'object' && imgData.fullSrc ? imgData.fullSrc : src;
+        const aspectRatio = typeof imgData === 'object' && imgData.ratio ? imgData.ratio : 1;
+
+        const item = document.createElement('div');
+        item.className = 'gallery-item loading';
+        
+        // Set aspect ratio for skeleton placeholder
+        if (aspectRatio) {
+            item.style.aspectRatio = aspectRatio;
+        }
+
+        const img = document.createElement('img');
+        img.src = src;
+        img.className = 'gallery-img';
+        img.loading = 'lazy';
+        img.alt = 'Gallery Image';
+        img.decoding = 'async'; // Non-blocking decode
+
+        // Fade in when loaded
+        img.onload = () => {
+            item.classList.remove('loading');
+            item.classList.add('loaded');
+            // Remove fixed aspect ratio after load to use natural size
+            item.style.aspectRatio = '';
+        };
+
+        // Lightbox Trigger (use full resolution)
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLightbox(fullSrc);
+        });
+
+        item.appendChild(img);
+
+        // True Masonry: Add to shortest column
+        const shortestColIndex = colHeights.indexOf(Math.min(...colHeights));
+        columns[shortestColIndex].appendChild(item);
+
+        // Estimate height contribution (width is equal, so height depends on aspect ratio)
+        // aspectRatio = width/height, so height contribution = 1/aspectRatio
+        const heightContribution = typeof aspectRatio === 'number' ? 1 / aspectRatio : 1;
+        colHeights[shortestColIndex] += heightContribution;
     });
 }
 
-// Close Lightbox (Background Click)
+async function fetchDriveImages() {
+    const allFiles = [];
+    const { apiKey, parentFolderId } = galleryConfig;
+
+    console.log('Fetching images from Drive...');
+
+    // Step 1: Get subfolders (横, 縦, etc.)
+    const foldersUrl = `https://www.googleapis.com/drive/v3/files?q='${parentFolderId}' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false&fields=files(id, name)&key=${apiKey}`;
+    
+    let folderIds = [];
+    try {
+        const foldersResponse = await fetch(foldersUrl);
+        console.log('Folders API status:', foldersResponse.status);
+        
+        if (foldersResponse.ok) {
+            const foldersData = await foldersResponse.json();
+            console.log('Subfolders found:', foldersData.files);
+            folderIds = foldersData.files ? foldersData.files.map(f => f.id) : [];
+        } else {
+            const errorData = await foldersResponse.json();
+            console.error('Folders API error:', errorData);
+        }
+    } catch (e) {
+        console.error('Failed to fetch subfolders:', e);
+    }
+
+    // If no subfolders found, try the parent folder directly
+    if (folderIds.length === 0) {
+        console.log('No subfolders, trying parent folder directly');
+        folderIds = [parentFolderId];
+    }
+
+    // Step 2: Get images from each folder (with pagination for large folders)
+    for (const folderId of folderIds) {
+        let pageToken = null;
+        
+        do {
+            let url = `https://www.googleapis.com/drive/v3/files?q='${folderId}' in parents and mimeType contains 'image/' and trashed = false&fields=files(id,name,mimeType,imageMediaMetadata),nextPageToken&key=${apiKey}&pageSize=100&orderBy=createdTime desc`;
+            
+            if (pageToken) {
+                url += `&pageToken=${pageToken}`;
+            }
+            
+            try {
+                const response = await fetch(url);
+                console.log('Images API status for folder:', response.status);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Images API error:', errorData);
+                    break;
+                }
+                
+                const data = await response.json();
+                console.log('Images found in this batch:', data.files?.length || 0);
+                
+                if (data.files) {
+                    allFiles.push(...data.files);
+                }
+                
+                pageToken = data.nextPageToken;
+            } catch (e) {
+                console.error('Failed to fetch images:', e);
+                break;
+            }
+        } while (pageToken);
+    }
+
+    console.log('Total images found:', allFiles.length);
+
+    // Convert to usable format
+    return allFiles.map(file => {
+        // Use smaller thumbnail for faster loading (w800 is enough for gallery cards)
+        const src = `https://lh3.googleusercontent.com/d/${file.id}=w800`;
+        // Full size for lightbox
+        const fullSrc = `https://lh3.googleusercontent.com/d/${file.id}=w2000`;
+        
+        // Calculate aspect ratio if metadata exists
+        let ratio = 1;
+        if (file.imageMediaMetadata) {
+            const { width, height } = file.imageMediaMetadata;
+            if (width && height) {
+                ratio = width / height;
+            }
+        }
+        
+        return { src, fullSrc, ratio };
+    });
+}
+
+function openLightbox(src) {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    if (lightbox && lightboxImg) {
+        lightbox.style.display = 'flex';
+        lightboxImg.src = src;
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Lightbox Controls
+const lightbox = document.getElementById('lightbox');
+const closeBtn = document.querySelector('.lightbox-close');
+
+if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+        closeLightbox();
+    });
+}
+
 if (lightbox) {
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) {
-            lightbox.style.display = 'none';
-            document.body.style.overflow = '';
+            closeLightbox();
         }
     });
 }
+
+function closeLightbox() {
+    if (lightbox) {
+        lightbox.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+}
+
+// Initialize Gallery
+document.addEventListener('DOMContentLoaded', initGallery);
+
+// Handle Resize
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(initGallery, 300);
+});
