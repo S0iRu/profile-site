@@ -422,6 +422,7 @@ ul {
     position: relative;
     z-index: 20;
     /* Keep above petals */
+    cursor: pointer;
 }
 
 .avatar-img:hover {
