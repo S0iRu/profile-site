@@ -721,6 +721,12 @@ ul {
     letter-spacing: 1px;
 }
 
+/* Anchor scroll position: avoid fixed header covering section titles */
+#gallery,
+#worlds {
+    scroll-margin-top: calc(var(--header-height) + 1rem);
+}
+
 /* Gallery Section */
 .gallery-grid {
     display: flex;
@@ -1205,6 +1211,12 @@ footer {
     .about-content p {
         font-size: 1rem;
         padding: 0 1rem;
+    }
+
+    /* Gallery: ensure enough vertical space on mobile so Favorite Worlds doesn't appear too soon */
+    .section.gallery {
+        min-height: 85vh;
+        padding-bottom: 5rem;
     }
 
     .gallery-grid {
