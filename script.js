@@ -625,10 +625,11 @@ async function fetchDriveImages() {
 
     // Convert to usable format
     return allFiles.map(file => {
-        // Use smaller thumbnail for faster loading (w800 is enough for gallery cards)
-        const src = `https://lh3.googleusercontent.com/d/${file.id}=w800`;
-        // Full size for lightbox
-        const fullSrc = `https://lh3.googleusercontent.com/d/${file.id}=w2000`;
+        // Use smaller thumbnail with WebP for faster loading
+        // w500 is sufficient for gallery cards, -rw converts to WebP format
+        const src = `https://lh3.googleusercontent.com/d/${file.id}=w500-rw`;
+        // Full size for lightbox (WebP for faster loading)
+        const fullSrc = `https://lh3.googleusercontent.com/d/${file.id}=w1600-rw`;
         
         // Calculate aspect ratio if metadata exists
         let ratio = 1;
