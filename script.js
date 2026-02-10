@@ -644,13 +644,35 @@ async function fetchDriveImages() {
     });
 }
 
+let lightboxScrollY = 0;
+
+function lockBodyScroll() {
+    lightboxScrollY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${lightboxScrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+}
+
+function unlockBodyScroll() {
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0, lightboxScrollY);
+}
+
 function openLightbox(src) {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     if (lightbox && lightboxImg) {
         lightbox.style.display = 'flex';
         lightboxImg.src = src;
-        document.body.style.overflow = 'hidden';
+        lockBodyScroll();
     }
 }
 
@@ -670,12 +692,19 @@ if (lightbox) {
             closeLightbox();
         }
     });
+
+    lightbox.addEventListener('touchend', (e) => {
+        if (e.target === lightbox) {
+            e.preventDefault();
+            closeLightbox();
+        }
+    }, { passive: false });
 }
 
 function closeLightbox() {
     if (lightbox) {
         lightbox.style.display = 'none';
-        document.body.style.overflow = '';
+        unlockBodyScroll();
     }
 }
 
@@ -684,7 +713,14 @@ document.addEventListener('DOMContentLoaded', initGallery);
 
 // Handle Resize
 let resizeTimer;
+let lastIsMobile = window.innerWidth <= 768;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(initGallery, 300);
+    resizeTimer = setTimeout(() => {
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile !== lastIsMobile) {
+            lastIsMobile = isMobile;
+            initGallery();
+        }
+    }, 300);
 });
