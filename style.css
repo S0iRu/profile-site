@@ -1071,6 +1071,51 @@ footer {
     }
 }
 
+/* Lightbox loading spinner */
+.lightbox-spinner {
+    position: absolute;
+    z-index: 100001;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.lightbox-spinner.active {
+    opacity: 1;
+}
+
+.spinner-ring {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    border-top-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: spinnerRotate 0.7s linear infinite;
+}
+
+@keyframes spinnerRotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Lightbox progressive image transition */
+.lightbox-content {
+    transition: filter 0.3s ease;
+}
+
+.lightbox-content.loading-hires {
+    filter: blur(2px);
+}
+
+/* Reduce backdrop-filter cost on mobile */
+@media (max-width: 768px) {
+    .lightbox {
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .container {

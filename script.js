@@ -534,11 +534,19 @@ async function initGallery() {
             item.style.aspectRatio = '';
         };
 
-        // Lightbox Trigger (use full resolution)
+        // Lightbox Trigger (pass both thumbnail and full resolution)
         item.addEventListener('click', (e) => {
             e.stopPropagation();
-            openLightbox(fullSrc);
+            openLightbox(fullSrc, src);
         });
+
+        // Preload full image on hover (desktop) or touchstart (mobile)
+        item.addEventListener('mouseenter', () => {
+            preloadImage(fullSrc);
+        }, { passive: true });
+        item.addEventListener('touchstart', () => {
+            preloadImage(fullSrc);
+        }, { passive: true });
 
         item.appendChild(img);
 
@@ -624,12 +632,16 @@ async function fetchDriveImages() {
     console.log('Total images found:', allFiles.length);
 
     // Convert to usable format
+    // Use responsive lightbox size: mobile gets w800, desktop gets w1600
+    const isMobileDevice = window.innerWidth <= 768;
+    const lightboxWidth = isMobileDevice ? 800 : 1600;
+
     return allFiles.map(file => {
         // Use smaller thumbnail with WebP for faster loading
         // w500 is sufficient for gallery cards, -rw converts to WebP format
         const src = `https://lh3.googleusercontent.com/d/${file.id}=w500-rw`;
-        // Full size for lightbox (WebP for faster loading)
-        const fullSrc = `https://lh3.googleusercontent.com/d/${file.id}=w1600-rw`;
+        // Responsive full size for lightbox (WebP for faster loading)
+        const fullSrc = `https://lh3.googleusercontent.com/d/${file.id}=w${lightboxWidth}-rw`;
         
         // Calculate aspect ratio if metadata exists
         let ratio = 1;
@@ -666,25 +678,62 @@ function unlockBodyScroll() {
     window.scrollTo(0, lightboxScrollY);
 }
 
-function openLightbox(src) {
+// Image preload cache to avoid duplicate requests
+const preloadCache = new Set();
+
+function preloadImage(src) {
+    if (preloadCache.has(src)) return;
+    preloadCache.add(src);
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.as = 'image';
+    link.href = src;
+    document.head.appendChild(link);
+}
+
+function openLightbox(fullSrc, thumbSrc) {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
-    if (lightbox && lightboxImg) {
+    const spinner = document.getElementById('lightbox-spinner');
+    if (!lightbox || !lightboxImg) return;
+
+    lightbox.style.display = 'flex';
+    lockBodyScroll();
+
+    // Step 1: Immediately show the thumbnail (already cached by browser)
+    if (thumbSrc) {
+        lightboxImg.src = thumbSrc;
+        lightboxImg.style.visibility = 'visible';
+        lightboxImg.classList.add('loading-hires');
+    } else {
         lightboxImg.style.visibility = 'hidden';
-        lightbox.style.display = 'flex';
-        lockBodyScroll();
+    }
 
-        const showImage = () => {
-            lightboxImg.style.visibility = 'visible';
-        };
+    // Show spinner while high-res loads
+    if (spinner) spinner.classList.add('active');
 
-        lightboxImg.onload = showImage;
-        lightboxImg.onerror = showImage;
-        lightboxImg.src = src;
+    // Step 2: Load full resolution in background, then swap
+    const hiRes = new Image();
+    hiRes.onload = () => {
+        lightboxImg.src = fullSrc;
+        lightboxImg.style.visibility = 'visible';
+        lightboxImg.classList.remove('loading-hires');
+        if (spinner) spinner.classList.remove('active');
+    };
+    hiRes.onerror = () => {
+        // On error, keep thumbnail visible
+        lightboxImg.style.visibility = 'visible';
+        lightboxImg.classList.remove('loading-hires');
+        if (spinner) spinner.classList.remove('active');
+    };
+    hiRes.src = fullSrc;
 
-        if (lightboxImg.complete) {
-            showImage();
-        }
+    // If already cached, swap immediately
+    if (hiRes.complete) {
+        lightboxImg.src = fullSrc;
+        lightboxImg.style.visibility = 'visible';
+        lightboxImg.classList.remove('loading-hires');
+        if (spinner) spinner.classList.remove('active');
     }
 }
 
@@ -722,7 +771,10 @@ function closeLightbox() {
             lightboxImg.onerror = null;
             lightboxImg.src = '';
             lightboxImg.style.visibility = 'hidden';
+            lightboxImg.classList.remove('loading-hires');
         }
+        const spinner = document.getElementById('lightbox-spinner');
+        if (spinner) spinner.classList.remove('active');
         unlockBodyScroll();
     }
 }
