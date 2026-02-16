@@ -670,9 +670,21 @@ function openLightbox(src) {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     if (lightbox && lightboxImg) {
+        lightboxImg.style.visibility = 'hidden';
         lightbox.style.display = 'flex';
-        lightboxImg.src = src;
         lockBodyScroll();
+
+        const showImage = () => {
+            lightboxImg.style.visibility = 'visible';
+        };
+
+        lightboxImg.onload = showImage;
+        lightboxImg.onerror = showImage;
+        lightboxImg.src = src;
+
+        if (lightboxImg.complete) {
+            showImage();
+        }
     }
 }
 
@@ -704,6 +716,13 @@ if (lightbox) {
 function closeLightbox() {
     if (lightbox) {
         lightbox.style.display = 'none';
+        const lightboxImg = document.getElementById('lightbox-img');
+        if (lightboxImg) {
+            lightboxImg.onload = null;
+            lightboxImg.onerror = null;
+            lightboxImg.src = '';
+            lightboxImg.style.visibility = 'hidden';
+        }
         unlockBodyScroll();
     }
 }
