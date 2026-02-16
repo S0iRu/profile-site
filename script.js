@@ -385,11 +385,21 @@ function showSecretMessage(isRare) {
     // Calculate font size adjustment if rare message (longer)
     const extraClass = isRare ? ' rare-msg' : '';
 
-    message.innerHTML = `
-        <span class="secret-emoji">${emoji}</span>
-        <span class="secret-text${extraClass}">${text}</span>
-        <span class="secret-emoji">${emoji}</span>
-    `;
+    const emojiSpan1 = document.createElement('span');
+    emojiSpan1.className = 'secret-emoji';
+    emojiSpan1.textContent = emoji;
+
+    const textSpan = document.createElement('span');
+    textSpan.className = 'secret-text' + extraClass;
+    textSpan.textContent = text;
+
+    const emojiSpan2 = document.createElement('span');
+    emojiSpan2.className = 'secret-emoji';
+    emojiSpan2.textContent = emoji;
+
+    message.appendChild(emojiSpan1);
+    message.appendChild(textSpan);
+    message.appendChild(emojiSpan2);
 
     const heroImage = document.querySelector('.hero-image');
     if (heroImage) {
@@ -445,7 +455,6 @@ function createParticleBurst() {
 // --- Gallery System & Lightbox ---
 const galleryConfig = {
     apiKey: 'AIzaSyB1omQ9Bwj3sdgAFzVzmBRocNItRZDH1bU',
-    // Googleドライブの親フォルダID（中に「横」「縦」などのサブフォルダがある想定）
     parentFolderId: '1foag51qpEAKVIxow4QzEzjrFIERPiylQ',
     useDrive: true,
     localImages: [
@@ -469,7 +478,9 @@ async function initGallery() {
     const container = document.getElementById('gallery-container');
     if (!container) return;
 
-    container.innerHTML = '';
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
 
     const isMobile = window.innerWidth <= 768;
     const colCount = isMobile ? 1 : 2;
